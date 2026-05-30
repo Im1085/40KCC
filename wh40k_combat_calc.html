@@ -305,7 +305,10 @@ input[type=number]{-moz-appearance:textfield}
 .loading-bar-wrap{width:240px;height:4px;background:#1a1a2a;border-radius:2px;overflow:hidden}
 .loading-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;animation:ldbar 1.2s ease-in-out infinite}
 @keyframes ldbar{0%{width:0;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0;margin-left:100%}}
-@media (max-width: 768px) {input, select, textarea {font-size: 16px !important;}}
+/* Prevent iOS Safari auto-zoom on input focus */
+@media (max-width: 768px) {
+  input, select, textarea { font-size: 16px !important; }
+}
 </style>
 <div id="loading-screen">
   <div class="loading-title">⚔ WH40K COMBAT CALC</div>
@@ -436,13 +439,13 @@ input[type=number]{-moz-appearance:textfield}
           <button id="atk-buftab-rng" onclick="setAtkBufTab2('atk','rng')" style="flex:1;padding:4px;font-size:10px;border:1px solid var(--bdr);border-radius:3px;background:var(--p2);color:var(--txt2);cursor:pointer">RANGED</button>
           <button id="atk-buftab-mel" onclick="setAtkBufTab2('atk','mel')" style="flex:1;padding:4px;font-size:10px;border:1px solid var(--bdr);border-radius:3px;background:var(--p2);color:var(--txt2);cursor:pointer">MELEE</button>
         </div>
-        <div id="atk-bufpanel-all"><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-all-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-all')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-all')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-all')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-all')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-all-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-all-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-all-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-all-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-all-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-all-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-melta')"><div class="td"></div>Melta</div></div></div>
+        <div id="atk-bufpanel-all"><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-all-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-all')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-all')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-all')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-all')" title="Enable"></div><div class="tbtn sus-x" title="Rapid Fire X"><div class="td"></div>RF<input type="number" class="buf-num sus-n-input" min="1" max="9" value="1" oninput="setRFNBuf(this,'atk-all')" ><input type="checkbox" class="sus-n-chk" onchange="togRFN(this,'atk-all')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-all-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-all-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-all-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-all-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-all-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-all-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-melta')"><div class="td"></div>Melta</div></div></div>
 
 
-        <div id="atk-bufpanel-rng" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Ranged only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-rng')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-rng')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-rng')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-rng')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-rng-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-melta')"><div class="td"></div>Melta</div></div></div>
+        <div id="atk-bufpanel-rng" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Ranged only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-rng')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-rng')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-rng')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-rng')" title="Enable"></div><div class="tbtn sus-x" title="Rapid Fire X"><div class="td"></div>RF<input type="number" class="buf-num sus-n-input" min="1" max="9" value="1" oninput="setRFNBuf(this,'atk-rng')" ><input type="checkbox" class="sus-n-chk" onchange="togRFN(this,'atk-rng')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-rng-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-melta')"><div class="td"></div>Melta</div></div></div>
 
 
-        <div id="atk-bufpanel-mel" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Melee only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-mel')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-mel')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-mel')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-mel')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-mel-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-melta')"><div class="td"></div>Melta</div></div></div>
+        <div id="atk-bufpanel-mel" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Melee only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-mel')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-mel')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-mel')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-mel')" title="Enable"></div><div class="tbtn sus-x" title="Rapid Fire X"><div class="td"></div>RF<input type="number" class="buf-num sus-n-input" min="1" max="9" value="1" oninput="setRFNBuf(this,'atk-mel')" ><input type="checkbox" class="sus-n-chk" onchange="togRFN(this,'atk-mel')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-mel-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-melta')"><div class="td"></div>Melta</div></div></div>
 
 
       </div>
@@ -628,9 +631,9 @@ input[type=number]{-moz-appearance:textfield}
           <button id="res-atk-buftab-rng" onclick="setAtkBufTab2('res-atk','rng')" style="flex:1;padding:4px;font-size:10px;border:1px solid var(--bdr);border-radius:3px;background:var(--p2);color:var(--txt2);cursor:pointer">RANGED</button>
           <button id="res-atk-buftab-mel" onclick="setAtkBufTab2('res-atk','mel')" style="flex:1;padding:4px;font-size:10px;border:1px solid var(--bdr);border-radius:3px;background:var(--p2);color:var(--txt2);cursor:pointer">MELEE</button>
         </div>
-        <div id="res-atk-bufpanel-all"><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-all-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-all')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-all')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-all')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-all')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-all-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-all-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-all-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-all-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-all-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-all-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-melta')"><div class="td"></div>Melta</div></div></div>
-        <div id="res-atk-bufpanel-rng" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Ranged only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-rng')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-rng')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-rng')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-rng')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-rng-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-melta')"><div class="td"></div>Melta</div></div></div>
-        <div id="res-atk-bufpanel-mel" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Melee only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-mel')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-mel')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-mel')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-mel')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-mel-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-melta')"><div class="td"></div>Melta</div></div></div>
+        <div id="res-atk-bufpanel-all"><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-all-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-all-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-all-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-all-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-all')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-all')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-all')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-all')" title="Enable"></div><div class="tbtn sus-x" title="Rapid Fire X"><div class="td"></div>RF<input type="number" class="buf-num sus-n-input" min="1" max="9" value="1" oninput="setRFNBuf(this,'atk-all')" ><input type="checkbox" class="sus-n-chk" onchange="togRFN(this,'atk-all')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-all-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-all-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-all-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-all-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-all-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-all-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-all-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-all-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-all-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-all-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-all-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-all-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-all-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-all-melta')"><div class="td"></div>Melta</div></div></div>
+        <div id="res-atk-bufpanel-rng" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Ranged only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-rng-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-rng')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-rng')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-rng')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-rng')" title="Enable"></div><div class="tbtn sus-x" title="Rapid Fire X"><div class="td"></div>RF<input type="number" class="buf-num sus-n-input" min="1" max="9" value="1" oninput="setRFNBuf(this,'atk-rng')" ><input type="checkbox" class="sus-n-chk" onchange="togRFN(this,'atk-rng')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-rng-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-rng-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-rng-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-rng-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-rng-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-rng-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-rng-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-rng-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-rng-melta')"><div class="td"></div>Melta</div></div></div>
+        <div id="res-atk-bufpanel-mel" style="display:none"><div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Melee only — stacks with ALL</div><div class="bsec-title">HIT</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rHitAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1')"><div class="td"></div>RR 1s Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-rHit1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishH')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pHit')"><div class="td"></div>+1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-mHit')"><div class="td"></div>-1 Hit</div><div class="tbtn" onclick="togB(this,'atk-mel-pBS')"><div class="td"></div>+1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-mBS')"><div class="td"></div>-1 BS/WS</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5')"><div class="td"></div>Crit 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-lethal')"><div class="td"></div>Lethal</div><div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setSusNBuf(this,'atk-mel')"><input type="checkbox" class="sus-n-chk" onchange="togSusN(this,'atk-mel')" title="Enable"></div><div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setSusDNBuf(this,'atk-mel')" ><input type="checkbox" class="sus-n-chk" onchange="togSusDN(this,'atk-mel')" title="Enable"></div><div class="tbtn sus-x" title="Rapid Fire X"><div class="td"></div>RF<input type="number" class="buf-num sus-n-input" min="1" max="9" value="1" oninput="setRFNBuf(this,'atk-mel')" ><input type="checkbox" class="sus-n-chk" onchange="togRFN(this,'atk-mel')" title="Enable"></div></div><div class="bsec-title" style="margin-top:4px">WOUND</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-rWndAll')"><div class="td"></div>Reroll All</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1')"><div class="td"></div>RR 1s Wnd</div><div class="tbtn" onclick="togB(this,'atk-mel-rWnd1Miss')"><div class="td"></div>RR 1 Miss</div><div class="tbtn" onclick="togB(this,'atk-mel-fishW')"><div class="td"></div>Fish Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-pWnd')"><div class="td"></div>+1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-mWnd')"><div class="td"></div>-1 Wound</div><div class="tbtn" onclick="togB(this,'atk-mel-crit5W')"><div class="td"></div>Crit Wnd 5+</div><div class="tbtn" onclick="togB(this,'atk-mel-devW')"><div class="td"></div>Dev Wnds</div><div class="tbtn" onclick="togB(this,'atk-mel-twin')"><div class="td"></div>Twin-Linked</div></div><div class="bsec-title" style="margin-top:4px">DAMAGE / ATTACKS</div><div class="brow" style="flex-wrap:wrap"><div class="tbtn" onclick="togB(this,'atk-mel-pAtk')"><div class="td"></div>+1 Atk</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr')"><div class="td"></div>+1 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-pStr2')"><div class="td"></div>+2 Str</div><div class="tbtn" onclick="togB(this,'atk-mel-critH')"><div class="td"></div>All Crits</div><div class="tbtn" onclick="togB(this,'atk-mel-blast')"><div class="td"></div>Blast</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg1')"><div class="td"></div>+1 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pDmg2')"><div class="td"></div>+2 Dmg</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP1')"><div class="td"></div>+1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-pAP2')"><div class="td"></div>+2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP1')"><div class="td"></div>-1 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-mAP2')"><div class="td"></div>-2 AP</div><div class="tbtn" onclick="togB(this,'atk-mel-melta')"><div class="td"></div>Melta</div></div></div>
       </div>
     </details>
     <details style="flex:1;min-width:200px;background:var(--p2);border:1px solid var(--bdr);border-radius:4px;padding:6px 8px">
@@ -763,7 +766,7 @@ input[type=number]{-moz-appearance:textfield}
           <div class="tbtn" onclick="labTogBuf(this,'sh1')"><div class="td"></div>Sustained 1</div>
           <div class="tbtn" onclick="labTogBuf(this,'sh2')"><div class="td"></div>Sustained 2</div>
           <div class="tbtn sus-x" title="Sustained X"><div class="td"></div>Sus<input type="number" class="buf-num sus-n-input" min="1" max="9" value="2" oninput="setWpnSusN(this)" onclick="event.stopPropagation()"><input type="checkbox" class="sus-n-chk" onchange="togWpnSusN(this)" title="Enable"></div>
-          <div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setWpnSusDN(this)" onclick="event.stopPropagation()"><input type="checkbox" class="sus-n-chk" onchange="togWpnSusDN(this)" title="Enable"></div>
+          <div class="tbtn sus-dx" title="Sustained DX (avg)"><div class="td"></div>Sus D<input type="number" class="buf-num sus-n-input" min="2" max="6" value="3" oninput="setWpnSusDN(this)" onclick="event.stopPropagation()"><input type="checkbox" class="sus-n-chk" onchange="togWpnSusDN(this)" title="Enable"></div><div class="tbtn sus-x" title="Rapid Fire X"><div class="td"></div>RF<input type="number" class="buf-num sus-n-input" min="1" max="9" value="1" oninput="setWpnRFN(this)" onclick="event.stopPropagation()"><input type="checkbox" class="sus-n-chk" onchange="togWpnRFN(this)" title="Enable"></div>
           <div class="tbtn" onclick="labTogBuf(this,'twin')"><div class="td"></div>Twin-Linked</div>
           <div class="tbtn" onclick="labTogBuf(this,'pAtk')"><div class="td"></div>+1 Attack</div>
           <div class="tbtn" onclick="labTogBuf(this,'pStr')"><div class="td"></div>+1 Strength</div><div class="tbtn" onclick="labTogBuf(this,'pStr2')"><div class="td"></div>+2 Strength</div><div class="tbtn" onclick="labTogBuf(this,'critH')"><div class="td"></div>All Crits</div>
@@ -1009,6 +1012,7 @@ function buildAm(weaponType, hitPenalty, wpnIdx) {
     crit5:   bv('crit5'),  crit5W: bv('crit5W'),
     sh1:     bv('sh1'),    sh2:    bv('sh2'),
     shX:     nvNum('shX'), shDX:   nvNum('shDX'),
+    rfX:     nvNum('rfX'),
     pDmg:    nv('pDmg1') + nv('pDmg2')*2,
     pAP:     nv('pAP1')  + nv('pAP2')*2 - (buffs['atk-mAP1']?1:0) - (buffs['atk-mAP2']?2:0),
     pStr:    bv('pStr') + (bv('pStr2') ? 2 : 0),  pAtk: nv('pAtk'),
@@ -1066,6 +1070,26 @@ function setWpnSusDN(el) {
 function togWpnSusDN(chk) {
   var n = parseInt(chk.closest('.tbtn').querySelector('.sus-n-input').value) || 3;
   labBufs['shDX'] = chk.checked ? n : 0;
+  runLab();
+}
+function setRFNBuf(el, pfx) {
+  var n = parseInt(el.value) || 1;
+  if (buffs[pfx+'-rfX']) buffs[pfx+'-rfX'] = n;
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function togRFN(chk, pfx) {
+  var n = parseInt(chk.closest('.tbtn').querySelector('.sus-n-input').value) || 1;
+  buffs[pfx+'-rfX'] = chk.checked ? n : 0;
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function setWpnRFN(el) {
+  var n = parseInt(el.value) || 1;
+  if (labBufs['rfX']) labBufs['rfX'] = n;
+  runLab();
+}
+function togWpnRFN(chk) {
+  var n = parseInt(chk.closest('.tbtn').querySelector('.sus-n-input').value) || 1;
+  labBufs['rfX'] = chk.checked ? n : 0;
   runLab();
 }
 function togB(el, key) {
@@ -1339,6 +1363,30 @@ function renderWeapons(unit) {
       return `<div class="tbtn${act?' on':''}" style="font-size:10px;padding:3px 6px" onclick="togWBuf(${idx},'${k}',this)"><div class="td"></div>${WBF_LABELS[i]}</div>`;
     }).join('');
 
+    // Per-weapon Sus X, Sus DX, RF X number widgets
+    const wSusX  = (wBufs[idx]&&wBufs[idx].shX)  ? wBufs[idx].shX  : 2;
+    const wSusDX = (wBufs[idx]&&wBufs[idx].shDX) ? wBufs[idx].shDX : 3;
+    const wRFX   = (wBufs[idx]&&wBufs[idx].rfX)  ? wBufs[idx].rfX  : 1;
+    const wSusXOn  = !!(wBufs[idx]&&wBufs[idx].shX  > 0 && wBufs[idx]._shXOn);
+    const wSusDXOn = !!(wBufs[idx]&&wBufs[idx].shDX > 0 && wBufs[idx]._shDXOn);
+    const wRFXOn   = !!(wBufs[idx]&&wBufs[idx]._rfXOn);
+    const wbNumHtml = `
+      <div class="tbtn sus-x" title="Sustained X (this weapon)"><div class="td"></div>Sus
+        <input type="number" class="buf-num sus-n-input" min="1" max="9" value="${wSusX}"
+          oninput="setWBufSusN(${idx},this)" onclick="event.stopPropagation()">
+        <input type="checkbox" class="sus-n-chk"${wSusXOn?' checked':''} onchange="togWBufSusN(${idx},this)" title="Enable">
+      </div>
+      <div class="tbtn sus-dx" title="Sustained DX (this weapon)"><div class="td"></div>Sus D
+        <input type="number" class="buf-num sus-n-input" min="2" max="6" value="${wSusDX}"
+          oninput="setWBufSusDN(${idx},this)" onclick="event.stopPropagation()">
+        <input type="checkbox" class="sus-n-chk"${wSusDXOn?' checked':''} onchange="togWBufSusDN(${idx},this)" title="Enable">
+      </div>
+      <div class="tbtn sus-x" title="Rapid Fire X (this weapon, ½ range only)"><div class="td"></div>RF
+        <input type="number" class="buf-num sus-n-input" min="1" max="9" value="${wRFX}"
+          oninput="setWBufRFN(${idx},this)" onclick="event.stopPropagation()">
+        <input type="checkbox" class="sus-n-chk"${wRFXOn?' checked':''} onchange="togWBufRFN(${idx},this)" title="Enable">
+      </div>`;
+
     const card = document.createElement('div');
     card.className = 'wcard';
     card.innerHTML = `
@@ -1369,7 +1417,7 @@ function renderWeapons(unit) {
       </div>
       <div id="wbuffs-${idx}" style="display:none" class="wbuffs">
         <div class="wb-title">WEAPON BUFFS (override unit buffs)</div>
-        <div class="brow" style="flex-wrap:wrap">${wbHtml}</div>
+        <div class="brow" style="flex-wrap:wrap">${wbHtml}${wbNumHtml}</div>
       </div>`;
     cont.appendChild(card);
   });
@@ -1405,6 +1453,45 @@ function togWBufEA(idx) {
   if (!wBufs[idx]) wBufs[idx] = {};
   wBufs[idx].extraAttacks = !wBufs[idx].extraAttacks;
   refreshWeapons();
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function setWBufSusN(idx, el) {
+  if (!wBufs[idx]) wBufs[idx] = {};
+  var n = parseInt(el.value) || 1;
+  wBufs[idx].shX = n;
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function togWBufSusN(idx, chk) {
+  if (!wBufs[idx]) wBufs[idx] = {};
+  var n = parseInt(chk.closest('.tbtn').querySelector('.sus-n-input').value) || 2;
+  wBufs[idx]._shXOn = chk.checked;
+  wBufs[idx].shX = chk.checked ? n : 0;
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function setWBufSusDN(idx, el) {
+  if (!wBufs[idx]) wBufs[idx] = {};
+  var n = parseInt(el.value) || 3;
+  wBufs[idx].shDX = n;
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function togWBufSusDN(idx, chk) {
+  if (!wBufs[idx]) wBufs[idx] = {};
+  var n = parseInt(chk.closest('.tbtn').querySelector('.sus-n-input').value) || 3;
+  wBufs[idx]._shDXOn = chk.checked;
+  wBufs[idx].shDX = chk.checked ? n : 0;
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function setWBufRFN(idx, el) {
+  if (!wBufs[idx]) wBufs[idx] = {};
+  var n = parseInt(el.value) || 1;
+  wBufs[idx].rfX = n;
+  if (window._allWeapons && window._allWeapons.length) calculate();
+}
+function togWBufRFN(idx, chk) {
+  if (!wBufs[idx]) wBufs[idx] = {};
+  var n = parseInt(chk.closest('.tbtn').querySelector('.sus-n-input').value) || 1;
+  wBufs[idx]._rfXOn = chk.checked;
+  wBufs[idx].rfX = chk.checked ? n : 0;
   if (window._allWeapons && window._allWeapons.length) calculate();
 }
 
@@ -1457,7 +1544,7 @@ function _conv(a, b) {
 // Handles: sustained hits, lethal hits (crits bypass wound roll),
 //          devastating wounds (bypass saves), anti-wound (T-based crit threshold),
 //          half-damage, reroll hits (pass pc/pn already adjusted for rerolls)
-function buildFsPmf(atk, pc, pn, wr, pf, sus, lethal, devFrac) {
+function buildFsPmf(atk, pc, pn, wr, pf, sus, lethal, devFrac, susDist) {
   sus = sus || 0; lethal = !!lethal; devFrac = devFrac || 0;
   var pm = Math.max(0, 1-pc-pn);
   var pnc = (pn+pm)>1e-10 ? pn/(pn+pm) : 0;
@@ -1474,8 +1561,22 @@ function buildFsPmf(atk, pc, pn, wr, pf, sus, lethal, devFrac) {
     if (lethal) {
       // base wounds from non-crit attacks: Binom(atk-c, peff)
       var baseW = _ba(atk-c, peff);
-      // sus bonus wounds: Binom(c*sus, wr)
-      var susW = (c*sus>0) ? _ba(c*sus, wr) : [1.0];
+      // sus bonus wounds — variable if susDist provided
+      var susW;
+      if (susDist && susDist.length > 1 && c > 0) {
+        // Each crit rolls DX for sus hits: sum of c DX rolls
+        var susTotDist = _convDieDist(susDist, c);
+        var susWArr = [0];
+        for (var sd in susTotDist) {
+          var sdp = susTotDist[sd], sdv = parseInt(sd);
+          var wA = sdv > 0 ? _ba(sdv, wr) : [1.0];
+          while (susWArr.length < wA.length) susWArr.push(0);
+          for (var si=0; si<wA.length; si++) susWArr[si] = (susWArr[si]||0) + sdp * wA[si];
+        }
+        susW = susWArr;
+      } else {
+        susW = (c*sus>0) ? _ba(c*sus, wr) : [1.0];
+      }
       var normW = _conv(baseW, susW);
       for (var nw=0; nw<normW.length; nw++) {
         var nwp=normW[nw]; if (nwp<1e-12) continue;
@@ -1485,7 +1586,21 @@ function buildFsPmf(atk, pc, pn, wr, pf, sus, lethal, devFrac) {
       // non-lethal: all hits (crits + norms + sus) go to wound roll
       var pnc2 = (pn+pm)>1e-10 ? pn/(pn+pm) : 0;
       var allHitBase = _ba(atk-c, pnc2);
-      var critAndSus = _ba(c*(1+sus), wr);
+      // crit+sus hits wound roll — variable if susDist provided
+      var critAndSus;
+      if (susDist && susDist.length > 1 && c > 0) {
+        var susTotDist2 = _convDieDist(susDist, c);
+        var csArr = [0];
+        for (var sd2 in susTotDist2) {
+          var sdp2 = susTotDist2[sd2], totalHits = c + parseInt(sd2);
+          var wA2 = _ba(totalHits, wr);
+          while (csArr.length < wA2.length) csArr.push(0);
+          for (var si2=0; si2<wA2.length; si2++) csArr[si2] = (csArr[si2]||0) + sdp2 * wA2[si2];
+        }
+        critAndSus = csArr;
+      } else {
+        critAndSus = _ba(c*(1+sus), wr);
+      }
       var normHitW = new Array(allHitBase.length+1).fill(0);
       for (var ni=0; ni<allHitBase.length; ni++) {
         if (!allHitBase[ni]) continue;
@@ -1588,6 +1703,41 @@ function _allocDmg(state, dmg, bgMaxW) {
   return s;
 }
 
+// ── Convolve a die distribution c times (sum of c independent rolls) ──
+// dieDist: [{d:value, p:probability}, ...]
+// Returns: object {totalValue: probability}
+function _convDieDist(dieDist, c) {
+  if (c <= 0) return {0: 1.0};
+  // Start with {0: 1.0} and convolve c times
+  var result = {0: 1.0};
+  for (var i = 0; i < c; i++) {
+    var next = {};
+    for (var k in result) {
+      var rp = result[k];
+      for (var di = 0; di < dieDist.length; di++) {
+        var tot = parseInt(k) + dieDist[di].d;
+        next[tot] = (next[tot]||0) + rp * dieDist[di].p;
+      }
+    }
+    result = next;
+  }
+  return result;
+}
+
+// ── Build total attack distribution for count models with atkStr attacks ──
+// e.g. atkStr='D6', count=4 → distribution of sum of 4d6
+function buildAtkDist(atkStr, count) {
+  // Parse the per-model attack as a distribution
+  var perModel = parseDmgDist(atkStr);  // reuse parseDmgDist for attack dice
+  if (perModel.length === 1) {
+    // Fixed attacks: single outcome
+    var fixed = Math.max(1, Math.round(perModel[0].d));
+    var r = {}; r[fixed * count] = 1.0; return r;
+  }
+  // Variable attacks: convolve count times
+  return _convDieDist(perModel, count);
+}
+
 // ── Apply FNP roll to damage ──
 // After failed save, each wound can be negated by FNP
 // Returns PMF of wounds-after-FNP given wounds-before-FNP
@@ -1606,16 +1756,69 @@ function _applyFnp(woundCount, fnpFail) {
 function _stateKey(s) { return s.join(','); }
 function _parseKey(k) { return k.split(',').map(Number); }
 
+// ── Parse damage string into a probability distribution ──
+// Returns array of {d, p} pairs for each possible damage value
+// e.g. 'D6+1' -> [{d:2,p:1/6},{d:3,p:1/6},...,{d:7,p:1/6}]
+// e.g. '3'    -> [{d:3,p:1}]
+// e.g. 'D3'   -> [{d:1,p:1/3},{d:2,p:1/3},{d:3,p:1/3}]
+function parseDmgDist(v) {
+  if (!v) return [{d:1, p:1}];
+  var s = String(v).trim();
+  // Pure number
+  if (s.indexOf('D') === -1 && s.indexOf('d') === -1) {
+    var flat = parseFloat(s) || 1;
+    return [{d: Math.max(1, Math.round(flat)), p: 1}];
+  }
+  var m = s.match(/^(\d*)[Dd](\d+)([+-]\d+)?$/);
+  if (!m) return [{d:1, p:1}];
+  var num   = m[1] ? parseInt(m[1]) : 1;
+  var sides = parseInt(m[2]);
+  var bonus = m[3] ? parseInt(m[3]) : 0;
+
+  // For single die: enumerate all faces
+  if (num === 1) {
+    var dist = [];
+    for (var face = 1; face <= sides; face++) {
+      var dmg = Math.max(1, face + bonus);
+      dist.push({d: dmg, p: 1/sides});
+    }
+    // Collapse duplicates (e.g. D6+0 is fine, but D3+0 with bonus that clips min)
+    var collapsed = {};
+    dist.forEach(function(x){ collapsed[x.d] = (collapsed[x.d]||0) + x.p; });
+    return Object.keys(collapsed).map(function(k){ return {d:parseInt(k), p:collapsed[k]}; });
+  }
+
+  // For multi-die (e.g. 2D6): convolve single-die distributions
+  var single = [];
+  for (var f = 1; f <= sides; f++) single.push({d: f, p: 1/sides});
+  var result = [{d:0, p:1}];
+  for (var di = 0; di < num; di++) {
+    var conv = {};
+    result.forEach(function(r) {
+      single.forEach(function(s2) {
+        var tot = r.d + s2.d;
+        conv[tot] = (conv[tot]||0) + r.p * s2.p;
+      });
+    });
+    result = Object.keys(conv).map(function(k){ return {d:parseInt(k), p:conv[k]}; });
+  }
+  // Apply flat bonus and min-1 clamp
+  return result.map(function(x){ return {d: Math.max(1, x.d + bonus), p: x.p}; });
+}
+
 // ── Apply one weapon to a state distribution ──
 // stateDist: {stateKey: probability}
 // fsPmf: {failedSaves: probability}
 // D: damage per failed save (integer, already has half-damage applied)
 // bgMaxW: BG model wound count
 // fnpFail: P(wound gets through FNP), 0 if no FNP
-function applyWeapon(stateDist, fsPmf, D, bgMaxW, fnpFail) {
-  D = Math.max(1, Math.round(D));
+function applyWeapon(stateDist, fsPmf, D, bgMaxW, fnpFail, dmgDist) {
   bgMaxW = bgMaxW || 2;
   fnpFail = fnpFail || 1;
+  // dmgDist: probability distribution over damage values
+  // If not provided, use flat D (legacy / average mode)
+  var useDist = dmgDist && dmgDist.length > 1;
+  if (!useDist) D = Math.max(1, Math.round(D || 1));
 
   var next = {};
 
@@ -1630,22 +1833,57 @@ function applyWeapon(stateDist, fsPmf, D, bgMaxW, fnpFail) {
       var fs = parseInt(fsStr);
 
       if (fnpFail < 1 && fs > 0) {
-        // Apply FNP: each of fs wounds has fnpFail chance of landing
         var fnpPmf = _applyFnp(fs, fnpFail);
         for (var wStr in fnpPmf) {
           var wp2 = fnpPmf[wStr];
           if (wp2 < 1e-10) continue;
           var w2 = parseInt(wStr);
-          var cur = baseState;
-          for (var i = 0; i < w2; i++) cur = _allocDmg(cur, D, bgMaxW);
-          var nk = _stateKey(cur);
-          next[nk] = (next[nk] || 0) + sp * fp * wp2;
+          // Apply w2 wounds, each with damage distribution
+          var woundDist = {}; woundDist[_stateKey(baseState)] = 1.0;
+          for (var i = 0; i < w2; i++) {
+            var wNext = {};
+            for (var sk in woundDist) {
+              var skp = woundDist[sk];
+              var skState = _parseKey(sk);
+              if (useDist) {
+                dmgDist.forEach(function(dv){
+                  var ns = _allocDmg(skState, dv.d, bgMaxW);
+                  var nsk = _stateKey(ns);
+                  wNext[nsk] = (wNext[nsk]||0) + skp * dv.p;
+                });
+              } else {
+                var ns = _allocDmg(skState, D, bgMaxW);
+                var nsk = _stateKey(ns);
+                wNext[nsk] = (wNext[nsk]||0) + skp;
+              }
+            }
+            woundDist = wNext;
+          }
+          for (var rk in woundDist) next[rk] = (next[rk]||0) + sp * fp * wp2 * woundDist[rk];
         }
       } else {
-        var cur = baseState;
-        for (var i = 0; i < fs; i++) cur = _allocDmg(cur, D, bgMaxW);
-        var nk = _stateKey(cur);
-        next[nk] = (next[nk] || 0) + sp * fp;
+        // No FNP: apply fs wounds directly
+        var woundDist2 = {}; woundDist2[_stateKey(baseState)] = 1.0;
+        for (var i = 0; i < fs; i++) {
+          var wNext2 = {};
+          for (var sk2 in woundDist2) {
+            var skp2 = woundDist2[sk2];
+            var skState2 = _parseKey(sk2);
+            if (useDist) {
+              dmgDist.forEach(function(dv2){
+                var ns2 = _allocDmg(skState2, dv2.d, bgMaxW);
+                var nsk2 = _stateKey(ns2);
+                wNext2[nsk2] = (wNext2[nsk2]||0) + skp2 * dv2.p;
+              });
+            } else {
+              var ns2 = _allocDmg(skState2, D, bgMaxW);
+              var nsk2 = _stateKey(ns2);
+              wNext2[nsk2] = (wNext2[nsk2]||0) + skp2;
+            }
+          }
+          woundDist2 = wNext2;
+        }
+        for (var rk2 in woundDist2) next[rk2] = (next[rk2]||0) + sp * fp * woundDist2[rk2];
       }
     }
   }
@@ -1665,7 +1903,7 @@ function resolveCombat(weapons, initialState, fnpFail) {
   dist[_stateKey(initialState)] = 1.0;
   for (var i = 0; i < weapons.length; i++) {
     var wpn = weapons[i];
-    dist = applyWeapon(dist, wpn.fsPmf, wpn.D, initialState[1] || 2, fnpFail || 1);
+    dist = applyWeapon(dist, wpn.fsPmf, wpn.D, initialState[1] || 2, fnpFail || 1, wpn.dmgDist);
   }
   return dist;
 }
@@ -1673,7 +1911,7 @@ function resolveCombat(weapons, initialState, fnpFail) {
 // ── Derive summary statistics from final state distribution ──
 function deriveSummary(dist, initialState, totalModels) {
   var bgModelsInit = initialState[0] || 0;
-  var ldrCount = initialState.length - 2;
+  var ldrCount = initialState.length - 3;  // -2 for [bgModels,bgTopW], -1 for overflow slot
   var ldrModelsInit = ldrCount; // 1 model per leader slot
 
   var wipePct = 0, avgKills = 0, avgBgKills = 0, avgLdrKills = 0;
@@ -1709,7 +1947,17 @@ function deriveSummary(dist, initialState, totalModels) {
   }
 
   wipePct = Math.min(100, wipePct * 100);
-  return { wipePct, avgKills, avgBgKills, avgLdrKills, avgDmg, dist };
+  var avgAbsorbed = avgDmg - 0; // will be set below correctly
+  // Recompute without overflow for the "absorbed" metric shown in header
+  avgAbsorbed = 0;
+  for (var key2 in dist) {
+    var p2 = dist[key2];
+    var s2 = _parseKey(key2);
+    var rem2 = (s2[0] > 0 ? s2[1] + (s2[0]-1)*(initialState[1]||2) : 0);
+    for (var li3 = 2; li3 < ovSlot; li3++) rem2 += (s2[li3]||0);
+    avgAbsorbed += p2 * (initWounds - rem2);
+  }
+  return { wipePct, avgKills, avgBgKills, avgLdrKills, avgDmg, avgAbsorbed, dist };
 }
 
 // ── Build outcome buckets for pie charts ──
@@ -1890,21 +2138,70 @@ function resolveWithPMF(wrs, allPools, dm, am, shootCharge) {
     // Attacks
     var kws_rf2 = parseKw(w.kw||'');
     var _isEA2 = kws_rf2.extraAttacks || (wr.atkIdx >= 0 && wBufs[wr.atkIdx] && wBufs[wr.atkIdx].extraAttacks);
-    var baseAtk = pDmg(w.A || '1') + (_isEA2 ? 0 : (wpnAm.pAtk || 0));
+    var baseAtkAvg = pDmg(w.A || '1') + (_isEA2 ? 0 : (wpnAm.pAtk || 0));
+    // Check if attack string is variable dice
+    var _atkStr = String(w.A || '1').trim();
+    var _atkHasDie = _atkStr.indexOf('D') >= 0 || _atkStr.indexOf('d') >= 0;
+    var baseAtk = baseAtkAvg;  // used for blast/RF which need a number
     // Rapid Fire: wr.r.half tracks whether this weapon is at half range
     if (wr.r && wr.r.half && kws_rf2.rapidfire) baseAtk += kws_rf2.rapidfire;
+    if (wr.r && wr.r.half && wpnAm.rfX) baseAtk += wpnAm.rfX;  // rfX buff
     // Blast: +1 attack per 5 models
     if (wpnAm.blast) baseAtk += Math.floor((dm.modelCount||1) / 5);
     var totalAtk = Math.round(baseAtk * (wr.count || 1));
 
     // weapons per model * model count already in totalAtk via wCounts
 
+    var dmgDist = parseDmgDist(w.D || '1');
+    // Apply +pDmg bonus to each outcome; apply half-D if active
+    if (wpnAm.pDmg || dm.halfD) {
+      dmgDist = dmgDist.map(function(dv){
+        var d2 = dv.d + (wpnAm.pDmg||0);
+        if (dm.halfD && !dm.halfDLeaderOnly) d2 = Math.ceil(d2/2);
+        return {d: Math.max(1,d2), p: dv.p};
+      });
+    }
+    // Sus DX distribution for variable sustained hits
+    var susDist = (wpnAm.shDX && wpnAm.shDX > 1) ? parseDmgDist('D'+wpnAm.shDX) : null;
+    // Variable attacks: build distribution over total attack counts
+    var fsPmf;
+    if (_atkHasDie && wr.count > 0) {
+      // Parse per-model atk die (without the pAtk bonus for now — add to each outcome)
+      var perModelDie = parseDmgDist(_atkStr);
+      var extraPerModel = (_isEA2 ? 0 : (wpnAm.pAtk||0));
+      // Apply extras to distribution, add RF/blast bonuses to average-based totalAtk
+      var atkBonusFlat = Math.floor((wr.r && wr.r.half && kws_rf2.rapidfire) ? kws_rf2.rapidfire : 0);
+      atkBonusFlat += Math.floor((wr.r && wr.r.half && wpnAm.rfX) ? wpnAm.rfX : 0);
+      atkBonusFlat += Math.floor(wpnAm.blast ? Math.floor((dm.modelCount||1)/5) : 0);
+      if (extraPerModel || atkBonusFlat) {
+        perModelDie = perModelDie.map(function(x){ return {d: Math.max(1,x.d+extraPerModel), p: x.p}; });
+      }
+      // Convolve for count models
+      var atkDistTotal = _convDieDist(perModelDie, wr.count);
+      // Add flat bonuses per unit (not per model)
+      if (atkBonusFlat) {
+        var shifted = {};
+        for (var ak in atkDistTotal) shifted[parseInt(ak)+atkBonusFlat*wr.count] = atkDistTotal[ak];
+        atkDistTotal = shifted;
+      }
+      // Compute fsPmf as weighted sum over attack counts
+      fsPmf = {};
+      for (var ak2 in atkDistTotal) {
+        var akp = atkDistTotal[ak2], akv = parseInt(ak2);
+        if (akp < 1e-12 || akv < 0) continue;
+        var pmf2 = buildFsPmf(akv, pc, pn, wound_rate, pFail, sus, lethal, devFrac, susDist);
+        for (var fk in pmf2) fsPmf[fk] = (fsPmf[fk]||0) + akp * pmf2[fk];
+      }
+    } else {
+      fsPmf = buildFsPmf(totalAtk, pc, pn, wound_rate, pFail, sus, lethal, devFrac, susDist);
+    }
     return {
       name: w.name,
       totalAtk: totalAtk,
-      fsPmf: buildFsPmf(totalAtk, pc, pn, wound_rate, pFail, sus, lethal, devFrac),
+      fsPmf: fsPmf,
       D: effD,
       effD: effD,
+      dmgDist: dmgDist,
       type: w.type || 'Ranged'
     };
   }
@@ -1937,17 +2234,22 @@ function resolveWithPMF(wrs, allPools, dm, am, shootCharge) {
 
     // Ranged state distribution for pool state display
     // Use expected depleted state for display (weighted average)
-    var avgBgModels = 0, avgBgTop = initialState[1];
-    var avgLdrs = new Array(initialState.length - 2).fill(0);
+    var avgBgModels = 0, avgBgTopW = 0;
+    var ovSlD = initialState.length - 1; // overflow slot
+    var avgLdrs = new Array(Math.max(0, initialState.length - 3)).fill(0);
     var totalP = 0;
     for (var rk in rangedDist) {
       var rp = rangedDist[rk]; totalP += rp;
       var rs = _parseKey(rk);
       avgBgModels += rp * (rs[0]||0);
-      for (var li=2; li<initialState.length; li++) avgLdrs[li-2] += rp*(rs[li]||0);
+      // True expected remaining wound pool: top model wounds + (n-1)*maxW
+      var bgMaxWD = initialState[1] || 2;
+      var remWounds = (rs[0]>0) ? (rs[1]||0) + Math.max(0,(rs[0]-1))*bgMaxWD : 0;
+      avgBgTopW += rp * remWounds;
+      for (var li=2; li<ovSlD; li++) avgLdrs[li-2] = (avgLdrs[li-2]||0) + rp*(rs[li]||0);
     }
 
-    var deplState = [Math.round(avgBgModels*100)/100, initialState[1]];
+    var deplState = [Math.round(avgBgModels*100)/100, initialState[1], Math.round(avgBgTopW*100)/100];
     avgLdrs.forEach(function(w){deplState.push(Math.round(w*100)/100);});
 
     var summary = deriveSummary(fullDist, initialState, totalModels);
@@ -2038,6 +2340,7 @@ function calcW(w, idx, am, dm, half) {
   var baseAtk = pDmg(w.A||'1') + (_isEA ? 0 : (am.pAtk||0));
   // Rapid Fire: at half range, add extra attacks equal to RF value
   if (half && kws_rf.rapidfire) baseAtk += kws_rf.rapidfire;
+  if (half && am.rfX) baseAtk += am.rfX;  // rfX buff
   // Blast: +1 attack per 5 models in defending unit
   if (am.blast) baseAtk += Math.floor((dm.modelCount||1) / 5);
   var totalAtk = baseAtk * (wCounts && wCounts[idx] !== undefined ? wCounts[idx] : 1);
@@ -2260,7 +2563,7 @@ function calculate(fromBtn) {
     wrs.forEach(function(wr){ mk += wr.r.modelsKilled||0; totDmg += wr.r.totalDmg||0; totWasted += wr.r.wastedDmg||0; });
   } else {
     mk = pmfResult.summary.avgKills;
-    totDmg = pmfResult.summary.avgDmg;
+    totDmg = pmfResult.summary.avgAbsorbed;  // absorbed only — excludes overflow into dead models
     totWasted = 0; // TODO: derive from PMF
   }
 
@@ -2310,7 +2613,7 @@ function calculate(fromBtn) {
       return {
         name: p.name, N: p.N, W: p.W||1,
         modelsLeft: deplN,
-        woundsLeft: p.isBodyguard ? (pmfResult.deplState[0]||0)*(pmfResult.deplState[1]||2) :
+        woundsLeft: p.isBodyguard ? (pmfResult.deplState[2] !== undefined ? pmfResult.deplState[2] : (pmfResult.deplState[0]||0)*(pmfResult.deplState[1]||2)) :
                    (pmfResult.deplState[pi+1]||0),
         isBodyguard: p.isBodyguard, isLeader: p.isLeader
       };
@@ -2446,26 +2749,29 @@ function renderResultsPiesPhased(containerId, d) {
   var allPools = d.allPools || [];
   var initialState = pmf.initialState;
   var bgMaxW = initialState[1] || 2;
-  var ldrCount = initialState.length - 2;
+  var ldrCount = initialState.length - 3;  // -2 for [bgModels,bgTopW], -1 for overflow slot
   var hasLdr = ldrCount > 0;
 
   function groupDist(dist, group) {
     var byDmg = {};
+    var ovSl = initialState.length - 1; // overflow slot index
     for (var key in dist) {
       var p = dist[key];
       var s = _parseKey(key);
-      var initW=0, remW=0;
+      var initW=0, remW=0, ov=0;
       if (group==='bg') {
         initW=(initialState[0]||0)*bgMaxW;
         remW=(s[0]>0?s[1]+(s[0]-1)*bgMaxW:0);
+        ov = s[ovSl] || 0;  // overflow into dead-model pool
       } else if (group==='ldr') {
-        for(var li=2;li<initialState.length;li++){initW+=initialState[li]||0;remW+=s[li]||0;}
+        for(var li=2;li<ovSl;li++){initW+=initialState[li]||0;remW+=s[li]||0;}
       } else {
-        initW=(initialState[0]||0)*bgMaxW+initialState.slice(2).reduce(function(a,b){return a+(b||0);},0);
+        initW=(initialState[0]||0)*bgMaxW+initialState.slice(2,ovSl).reduce(function(a,b){return a+(b||0);},0);
         remW=(s[0]>0?s[1]+(s[0]-1)*bgMaxW:0);
-        for(var li2=2;li2<s.length;li2++) remW+=s[li2]||0;
+        for(var li2=2;li2<ovSl;li2++) remW+=s[li2]||0;
+        ov = s[ovSl] || 0;
       }
-      var dmg=initW-remW, dk=Math.round(dmg*4)/4;
+      var dmg=initW-remW+ov, dk=Math.round(dmg*4)/4;
       byDmg[dk]=(byDmg[dk]||0)+p;
     }
     var arr=[];
@@ -2489,9 +2795,10 @@ function renderResultsPiesPhased(containerId, d) {
   var totN = bgN + ldrN;
   // W-per-model for each group (used as defW in renderDmgOutcomesPie)
   var bgW = bgMaxW; // wounds per BG model
-  var ldrW = ldrN > 0 ? Math.round(initialState.slice(2).reduce(function(a,b){return a+(b||0);},0) / Math.max(1,ldrN)) : 4; // avg W per leader
+  var ldrW = ldrN > 0 ? Math.round(initialState.slice(2, initialState.length-1).reduce(function(a,b){return a+(b||0);},0) / Math.max(1,ldrN)) : 4; // avg W per leader
   var totWoundPool = bgN*bgW + ldrN*ldrW;
-  var totW = 1; // defW=1; defModels=totWoundPool
+  var totModelsPhased = allPools.reduce(function(s2,p2){return s2+(p2.isBodyguard?Math.round(p2.N):1);},0);
+  var avgWPhased = totModelsPhased > 0 ? Math.max(1, totWoundPool / totModelsPhased) : 1;
 
   var html = '';
 
@@ -2503,7 +2810,7 @@ function renderResultsPiesPhased(containerId, d) {
           + '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">';
     html += makePhasePie(rDist,'🛡 BODYGUARD','bg',bgN,bgW,'rng-bg');
     if(hasLdr) html += makePhasePie(rDist,'👑 LEADER','ldr',ldrN,ldrW,'rng-ldr');
-    html += makePhasePie(rDist,'⚔ TOTAL','all',totWoundPool,totW,'rng-all');
+    html += makePhasePie(rDist,'⚔ TOTAL','all',totModelsPhased,avgWPhased,'rng-all');
     html += '</div></div>';
   }
 
@@ -2532,7 +2839,7 @@ function renderResultsPiesPhased(containerId, d) {
         + '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">';
   html += makePhasePie(pmf.dist,'🛡 BODYGUARD','bg',bgN,bgW,'mel-bg');
   if(hasLdr) html += makePhasePie(pmf.dist,'👑 LEADER','ldr',ldrN,ldrW,'mel-ldr');
-  html += makePhasePie(pmf.dist,'⚔ MELEE DMG','all',totWoundPool,totW,'mel-all');
+  html += makePhasePie(pmf.dist,'⚔ MELEE DMG','all',totModelsPhased,avgWPhased,'mel-all');
   html += '</div></div>';
 
   el.innerHTML = html;
@@ -2801,6 +3108,7 @@ function buildLabAm(w, half) {
     sh1:      sb('sh1'),      sh2:  sb('sh2'),
     shX:      (scopeActive && labBufs['shX']) ? (parseInt(labBufs['shX'])||0) : 0,
     shDX:     (scopeActive && labBufs['shDX']) ? (parseInt(labBufs['shDX'])||0) : 0,
+    rfX:      (scopeActive && labBufs['rfX']) ? (parseInt(labBufs['rfX'])||0) : 0,
     pDmg:     sn('pDmg1') + sn('pDmg2')*2,
     pAP:      sn('pAP1')  + sn('pAP2')*2 - sn('mAP1') - sn('mAP2')*2,
     pStr:     (sb('pStr') ? 1 : 0) + (sb('pStr2') ? 2 : 0),
