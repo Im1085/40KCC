@@ -35,13 +35,55 @@ def _is_cond(s):
 
 STAT = {'a': 'A', 's': 'S', 'ap': 'AP', 'd': 'D', 'ws': 'BS', 'bs': 'BS'}
 
+NONKW = {'CP', 'OC', 'AP', 'WS', 'BS', 'SV', 'LD', 'VP', 'HP', 'II', 'III', 'IV'}
+
+def _strip(x):
+    return x.replace('⟦', '').replace('⟧', '')
+
+def _phrases(seg):
+    """Runs of keyword words (⟦marked⟧ or ALL-CAPS) in a text segment → list of word lists."""
+    out, cur = [], []
+    seg = re.sub(r'\[[^\]]*\]', ' , ', seg)          # ignore [WEAPON ABILITY] names
+    seg = re.sub(r'(?i)if your army faction is[^,]*,', ' , ', seg)   # faction gate, not a unit filter
+    for m in re.finditer(r"⟦([^⟧]+)⟧|([A-Za-z’'\-]+)|([^\sA-Za-z])", seg):
+        if m.group(1):
+            cur += [w.lower() for w in m.group(1).split()]
+        elif m.group(2) and m.group(2).isupper() and len(m.group(2)) >= 2 and m.group(2) not in NONKW:
+            cur.append(m.group(2).lower())
+        else:
+            if cur: out.append(cur); cur = []
+    if cur: out.append(cur)
+    return out
+
+def kwreq(seg):
+    """Keyword requirement of a clause: [[any-of phrases], [excluded phrases]] or None."""
+    m = re.search(r'excluding([^)]*)', seg, re.I)
+    exc = _phrases(m.group(1)) if m else []
+    inc_seg = seg[:m.start()] + seg[m.end():] if m else seg
+    inc = _phrases(inc_seg)
+    if not inc and not exc: return None
+    return [inc, exc]
+
 def parse(text, name=''):
     t = re.sub(r'\s+', ' ', text or '').strip()
+    marked = t
+    t = _strip(t)
     low = t.lower()
+    # ability-level keyword requirement: "XXX model only." or the first sentence naming keyworded units
+    abreq = None
+    mo = re.match(r'^(.+?) (?:model|unit)s? only\b', marked)
+    if mo and len(mo.group(1)) < 80:
+        words = [w for w in re.split(r'\s+or\s+', _strip(mo.group(1)))]
+        abreq = [[[x.lower() for x in re.findall(r"[A-Za-z’'\-]+", w)] for w in words], []]
+    else:
+        for sent in re.split(r'(?<=[.])\s+', marked):
+            if '⟦' in sent and re.search(r'\bunits?\b|\bmodels?\b', sent, re.I):
+                abreq = kwreq(sent); break
+    t = marked
     ab_cond = 1 if re.search(r'once per (battle|turn|phase|battle round)|can use this ability|roll one d6|select one', low) else 0
     effs = []
     # split into sentences, keeping bracketed tokens intact
-    sents = [x.strip() for x in re.split(r'(?<=[.])\s+(?=[A-Z\[])', t) if x.strip()]
+    sents = [x.strip() for x in re.split(r'(?<=[.])\s+(?=[A-Z\[⟦])', t) if x.strip()]
     # stat bullet lists ("have: +3 A . +2 S .") are split by '. ' — rejoin short fragments to previous sentence
     merged = []
     for x in sents:
@@ -60,6 +102,9 @@ def parse(text, name=''):
             else:
                 clauses.append(lead + pt)
     for raw in clauses:
+        creq = kwreq(raw) if ('⟦' in raw) else None
+        req = creq or abreq
+        raw = _strip(raw)
         s = raw.lower()
         # context sentence for fragments like "If you do, ..."
         ctx = (ctx_prev + ' ' + s) if s.startswith('if you do') else s
@@ -68,7 +113,7 @@ def parse(text, name=''):
         enemy = 'enemy' in s or 'opponent' in s
         targeted = bool(re.search(r'(targets? (this|that|the bearer|a model in this|its)|allocated to|an attack targets|attack is made against|targeted)', s))
         def add(side, key, val=1, scope=None, c=None):
-            e = [side, key, val, scope or (sc if side == 'a' else 'all'), who, cond if c is None else c]
+            e = [side, key, val, scope or (sc if side == 'a' else 'all'), who, cond if c is None else c, None, req]
             if e not in effs: effs.append(e)
         # ----- defensive -----
         for m in re.finditer(r'(\d)\+ invulnerable save', s):

@@ -38,6 +38,10 @@ def R(stem):
             rows.append(dict(zip(hdr, buf.split('|')))); buf = ''
     return rows
 
+def mark_kw(s):
+    # keep Wahapedia keyword markup as ⟦WORD⟧ so ability parsing can see which units a rule targets
+    return re.sub(r'<span class="kwb2?">([^<]*)</span>', lambda m: '⟦' + m.group(1).strip() + '⟧' if m.group(1).strip() else ' ', s or '')
+
 def clean(s):
     s = re.sub(r'</li>', '. ', s or '', flags=re.I)
     s = re.sub(r'<[^>]+>', ' ', s)
@@ -151,6 +155,7 @@ def main():
             dmgW = -int(mm.group(1))   # damaged profile that does not affect hit rolls
         # abilities: [name, text, effects]
         abl = []; fdeck = 0
+        frules = [a['ability_id'] for a in uab[d['id']] if a['type'] == 'Faction' and a['ability_id']]
         wnames = sorted({re.sub(r'\s+[–-]\s+.*$', '', w[0]).lower() for w in ws}, key=len, reverse=True)
         for a in uab[d['id']]:
             typ = a['type']
@@ -170,27 +175,26 @@ def main():
             low = txt.lower()
             for e in effs:   # restrict to named weapons when the text names one of this unit's weapons
                 wf = [wn for wn in wnames if len(wn) > 3 and wn in low]
-                if wf and e[0] == 'a': e.append(wf)
+                if wf and e[0] == 'a': e[6] = wf
+                e[7] = None          # datasheet abilities: no army-keyword filtering
             abl.append([nm, txt[:700], effs])
         units[d['faction_id']].append([
             did, clean(d['name']), d['role'], m['M'], num(m['T'], 4), m['Sv'], inv, num(m['W'], 1),
-            m['Ld'], num(m['OC'], 0), ws, flags, '|'.join(ukw[d['id']]), dmgW, abl, fdeck])
+            m['Ld'], num(m['OC'], 0), ws, flags, '|'.join(ukw[d['id']]), dmgW, abl, fdeck, frules])
 
     f_out = [[f['id'], f['name']] for f in fac if units.get(f['id'])]
     # ---- army rules, detachments (abilities + enhancements) ----
     def abil_entry(name, desc, force_cond=False):
         nm = clean(name); txt = clean(desc)
-        effs = parse_ability(txt, nm)
+        effs = parse_ability(clean(mark_kw(desc)), nm)
         for e in effs:
             if e[4] == 'model': e[4] = 'unit'
             if force_cond: e[5] = 1
         return [nm, txt[:900], effs]
-    ar = collections.defaultdict(list); seen_ar = set()
+    ar = {}   # army / faction rules by ability id; each datasheet lists the ones it has
     for a in R('Abilities'):
-        fid = a['faction_id']
-        if not fid or (fid, a['name']) in seen_ar: continue
-        seen_ar.add((fid, a['name']))
-        ar[fid].append(abil_entry(a['name'], a['description']))
+        if a['id'] in ar or not a['faction_id']: continue
+        ar[a['id']] = abil_entry(a['name'], a['description'])
     dets = collections.defaultdict(list); dmap = {}
     for d0 in R('Detachments'):
         if d0['type'] == 'Boarding Actions' or not d0['faction_id']: continue
@@ -207,7 +211,7 @@ def main():
             dmap[c['detachment_id']][5][c['keyword'].strip().lower()] = int(c['dp'])
     for k in dets: dets[k].sort(key=lambda x: x[1])
     lm = {k: v for k, v in leaders.items()}
-    out = {'f': f_out, 'u': dict(units), 'lm': lm, 'ar': dict(ar), 'det': dict(dets), 'meta': {'edition': 11, 'updated': upd}}
+    out = {'f': f_out, 'u': dict(units), 'lm': lm, 'ar': ar, 'det': dict(dets), 'meta': {'edition': 11, 'updated': upd}}
     raw = json.dumps(out, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
     open('db_new.json', 'wb').write(raw)
     b64 = base64.b64encode(gzip.compress(raw, 9, mtime=0)).decode()
