@@ -194,7 +194,7 @@ def main():
     dets = collections.defaultdict(list); dmap = {}
     for d0 in R('Detachments'):
         if d0['type'] == 'Boarding Actions' or not d0['faction_id']: continue
-        e = [d0['id'], clean(d0['name']), [], []]
+        e = [d0['id'], clean(d0['name']), [], [], int(d0['dp']) if (d0['dp'] or '').strip().isdigit() else 0, {}]
         dmap[d0['id']] = e; dets[d0['faction_id']].append(e)
     for a in R('Detachment_abilities'):
         if a['detachment_id'] in dmap: dmap[a['detachment_id']][2].append(abil_entry(a['name'], a['description']))
@@ -202,6 +202,9 @@ def main():
         if a['detachment_id'] in dmap:
             en = abil_entry(a['name'], a['description'], force_cond=True); en.append(a['cost'])
             dmap[a['detachment_id']][3].append(en)
+    for c in R('Detachments_chapter_dp'):   # chapter-specific DP overrides (e.g. Black Templars)
+        if c['detachment_id'] in dmap and (c['dp'] or '').strip().isdigit():
+            dmap[c['detachment_id']][5][c['keyword'].strip().lower()] = int(c['dp'])
     for k in dets: dets[k].sort(key=lambda x: x[1])
     lm = {k: v for k, v in leaders.items()}
     out = {'f': f_out, 'u': dict(units), 'lm': lm, 'ar': dict(ar), 'det': dict(dets), 'meta': {'edition': 11, 'updated': upd}}

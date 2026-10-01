@@ -1,6 +1,6 @@
 // WH40K Combat Calc Service Worker
 // Bump CACHE_VERSION whenever you deploy an update — this forces all clients to refresh
-const CACHE_VERSION = 'wh40k-calc-v4';
+const CACHE_VERSION = 'wh40k-calc-v5';
 const ASSETS = [
   './wh40k_combat_calc.html',
   './manifest.json'
