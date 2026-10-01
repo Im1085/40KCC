@@ -1881,6 +1881,47 @@ function _applyFnpToDist(dist, fnpR) {
   return Object.keys(o).map(function (k) { return { d: +k, p: o[k] }; });
 }
 
+// ---- Count distributions for the Weapon Lab (real percentiles instead of ±25% guesses) ----
+// g = per-attack distribution of the counted quantity; returns {count: prob} over all attacks.
+function _countDistProfile(P, g) {
+  var perModel = P.perModel, count = Math.max(0, Math.round(P.count));
+  var totDist;
+  if (perModel.length === 1) { totDist = {}; totDist[perModel[0].d * count] = 1; }
+  else totDist = _convDieDist(perModel, count);
+  var keys = Object.keys(totDist).map(Number).filter(function (k) { return totDist[k] > 1e-12; }).sort(function (a, b) { return a - b; });
+  var out = {}, cur = [1], ki = 0, maxA = keys.length ? keys[keys.length - 1] : 0;
+  for (var a = 0; a <= maxA; a++) {
+    if (a > 0) { cur = _conv(cur, g); for (var t = cur.length - 1; t > 0 && cur[t] < 1e-13; t--) cur.length = t; }
+    if (ki < keys.length && keys[ki] === a) {
+      for (var i = 0; i < cur.length; i++) if (cur[i] > 1e-13) out[i] = (out[i] || 0) + totDist[a] * cur[i];
+      ki++;
+    }
+  }
+  return out;
+}
+function profileHitDists(P) {
+  var susD = P.susDist || [{ d: Math.round(P.sus), p: 1 }];
+  var gAll = [P.pm, P.pn], gNorm = [P.pm + P.pc * 0, P.pn], gCrit = [1 - P.pc, P.pc];
+  susD.forEach(function (sd) {
+    gAll[1 + sd.d] = (gAll[1 + sd.d] || 0) + P.pc * sd.p;
+    gNorm[sd.d] = (gNorm[sd.d] || 0) + P.pc * sd.p;
+  });
+  for (var i = 0; i < gAll.length; i++) gAll[i] = gAll[i] || 0;
+  for (var j = 0; j < gNorm.length; j++) gNorm[j] = gNorm[j] || 0;
+  return { all: _countDistProfile(P, gAll), norm: _countDistProfile(P, gNorm), crit: _countDistProfile(P, gCrit) };
+}
+function _distConvObj(a, b) {
+  var o = {};
+  for (var x in a) for (var y in b) { var k = +x + +y; o[k] = (o[k] || 0) + a[x] * b[y]; }
+  return o;
+}
+// q-quantile of a {value: prob} distribution
+function _distPct(d, q) {
+  var ks = Object.keys(d).map(Number).sort(function (a, b) { return a - b; }), c = 0;
+  for (var i = 0; i < ks.length; i++) { c += d[ks[i]]; if (c >= q - 1e-9) return ks[i]; }
+  return ks.length ? ks[ks.length - 1] : 0;
+}
+
 // ===== DATASHEET ABILITIES (auto-read from unit rules) =====
 // Each unit carries [name, text, effects[]] parsed from its datasheet. Effects become toggles:
 // unconditional ones start ON, situational ones (charged, once per battle, auras, target-specific) start OFF.
@@ -2197,31 +2238,48 @@ function renderAbilities(side) {
 }
 
 // ===== FIRING DECK (11th: TRANSPORT shoots with up to X embarked models' ranged weapons) =====
-window._fdeck = { fid: '', uid: '', counts: {} };
-function _fdUnit() {
-  var fd = window._fdeck;
-  if (!fd.fid || !fd.uid || !WH.units[fd.fid]) return null;
-  return WH.units[fd.fid].find(function(u){ return String(u.id) === String(fd.uid); }) || null;
+// Several different units can be embarked; X models in total pick one ranged weapon each.
+window._fdeck = { fid: '', groups: [] };   // groups: [{uid, counts:{weaponIdx:n}}]
+function _fdNorm() {
+  var fd = window._fdeck || {};
+  if (!fd.groups) fd.groups = fd.uid ? [{ uid: fd.uid, counts: fd.counts || {} }] : [];   // old saved configs
+  window._fdeck = fd;
+  return fd;
+}
+function _fdUnitById(fid, uid) {
+  return (WH.units[fid] || []).find(function(u){ return String(u.id) === String(uid); }) || null;
 }
 function _fdWeapons(u) {
   return (u ? u.weapons : []).filter(function(w){ return w.type !== 'Melee' && !parseKw(w.kw).oneShot; });
 }
 function firingDeckWeapons() {
-  var X = atkUnit && atkUnit.firingDeck;
-  var u = _fdUnit();
-  if (!X || !u) return [];
-  var ws = _fdWeapons(u), out = [];
-  ws.forEach(function(w, i){ var n = window._fdeck.counts[i] || 0; if (n > 0) out.push({ w: w, n: n, unitName: u.n }); });
+  var X = atkUnit && atkUnit.firingDeck, fd = _fdNorm();
+  if (!X) return [];
+  var out = [];
+  fd.groups.forEach(function(g){
+    var u = _fdUnitById(fd.fid, g.uid); if (!u) return;
+    _fdWeapons(u).forEach(function(w, i){ var n = g.counts[i] || 0; if (n > 0) out.push({ w: w, n: n, unitName: u.n }); });
+  });
   return out;
 }
-function _fdTotal() { var t = 0, c = window._fdeck.counts; for (var k in c) t += c[k] || 0; return t; }
-function fdSetFac(v) { window._fdeck = { fid: v, uid: '', counts: {} }; refreshWeapons(); }
-function fdSetUnit(v) { window._fdeck.uid = v; window._fdeck.counts = {}; refreshWeapons(); }
-function fdChg(i, d) {
-  var X = (atkUnit && atkUnit.firingDeck) || 0, c = window._fdeck.counts;
-  var cur = c[i] || 0;
+function _fdTotal() {
+  var t = 0;
+  _fdNorm().groups.forEach(function(g){ for (var k in g.counts) t += g.counts[k] || 0; });
+  return t;
+}
+function fdSetFac(v) { window._fdeck = { fid: v, groups: [] }; refreshWeapons(); }
+function fdAddUnit(v) {
+  if (!v) return;
+  var fd = _fdNorm();
+  if (!fd.groups.some(function(g){ return String(g.uid) === String(v); })) fd.groups.push({ uid: v, counts: {} });
+  refreshWeapons();
+}
+function fdRemoveUnit(gi) { _fdNorm().groups.splice(gi, 1); refreshWeapons(); }
+function fdChg(gi, i, d) {
+  var X = (atkUnit && atkUnit.firingDeck) || 0, g = _fdNorm().groups[gi];
+  if (!g) return;
   if (d > 0 && _fdTotal() >= X) return;
-  c[i] = Math.max(0, cur + d);
+  g.counts[i] = Math.max(0, (g.counts[i] || 0) + d);
   refreshWeapons();
 }
 function renderFiringDeck() {
@@ -2229,31 +2287,37 @@ function renderFiringDeck() {
   if (!el) return;
   var X = atkUnit && atkUnit.firingDeck;
   if (!X) { el.innerHTML = ''; return; }
-  var fd = window._fdeck;
+  var fd = _fdNorm();
   if (!fd.fid) fd.fid = _sideFid('atk');
+  var used = _fdTotal();
   var facOpts = WH.factions.map(function(f){ return '<option value="' + f.id + '"' + (f.id === fd.fid ? ' selected' : '') + '>' + f.name + '</option>'; }).join('');
+  var taken = fd.groups.map(function(g){ return String(g.uid); });
   var units = (WH.units[fd.fid] || []).filter(function(u){
     var k = u.keywords || [];
-    return k.indexOf('vehicle') < 0 && k.indexOf('monster') < 0 && _fdWeapons(u).length;
+    return k.indexOf('vehicle') < 0 && k.indexOf('monster') < 0 && _fdWeapons(u).length && taken.indexOf(String(u.id)) < 0;
   }).slice().sort(function(a, b){ return a.n.localeCompare(b.n); });
-  var unitOpts = '<option value="">— Embarked unit —</option>' + units.map(function(u){ return '<option value="' + u.id + '"' + (String(u.id) === String(fd.uid) ? ' selected' : '') + '>' + u.n + '</option>'; }).join('');
-  var u = _fdUnit(), rows = '';
-  if (u) {
-    rows = _fdWeapons(u).map(function(w, i){
-      var n = fd.counts[i] || 0;
-      return '<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-top:1px solid var(--bdr)">'
-        + '<div style="flex:1;font-size:11px">' + w.name + ' <span style="font-size:9px;color:var(--txt2)">' + w.range + '" A' + w.A + ' ' + ((parseInt(w.skill) > 0) ? 'BS' + w.skill + '+ ' : '') + 'S' + w.S + ' AP' + w.AP + ' D' + w.D + '</span></div>'
-        + '<button class="cbtn" onclick="fdChg(' + i + ',-1)">−</button><span style="min-width:16px;text-align:center;font-family:monospace">' + n + '</span><button class="cbtn" onclick="fdChg(' + i + ',1)">+</button></div>';
-    }).join('');
-  }
-  var used = _fdTotal();
-  el.innerHTML = '<div style="margin-bottom:8px;padding:6px 8px;background:var(--p2);border:1px solid var(--bdr);border-left:3px solid var(--org);border-radius:4px">'
-    + '<div style="font-size:11px;font-weight:600;color:var(--org);margin-bottom:4px">🚪 FIRING DECK ' + X + ' <span style="font-size:9px;color:var(--txt2);font-weight:400">— pick up to ' + X + ' embarked models; each fires one ranged weapon (no [ONE SHOT])</span></div>'
-    + '<div class="row2" style="margin-bottom:4px"><div><select onchange="fdSetFac(this.value)" style="font-size:11px">' + facOpts + '</select></div>'
-    + '<div><select onchange="fdSetUnit(this.value)" style="font-size:11px">' + unitOpts + '</select></div></div>'
-    + rows
-    + (u ? '<div style="font-size:10px;color:' + (used >= X ? 'var(--org)' : 'var(--txt2)') + ';margin-top:3px">' + used + ' / ' + X + ' models selected</div>' : '')
-    + '</div>';
+  var h = '<div style="margin-bottom:8px;padding:6px 8px;background:var(--p2);border:1px solid var(--bdr);border-left:3px solid var(--org);border-radius:4px">'
+    + '<div style="font-size:11px;font-weight:600;color:var(--org);margin-bottom:4px">🚪 FIRING DECK ' + X
+    + ' <span style="font-size:9px;color:var(--txt2);font-weight:400">— up to ' + X + ' embarked models (any mix of units), one ranged weapon each, no [ONE SHOT]</span>'
+    + '<span style="float:right;font-family:monospace;color:' + (used >= X ? 'var(--org)' : 'var(--txt2)') + '">' + used + ' / ' + X + '</span></div>';
+  h += '<select onchange="fdSetFac(this.value)" style="font-size:11px;width:100%;margin-bottom:4px">' + facOpts + '</select>';
+  fd.groups.forEach(function(g, gi){
+    var u = _fdUnitById(fd.fid, g.uid); if (!u) return;
+    h += '<div style="margin:4px 0;padding:4px 6px;border:1px solid var(--bdr);border-radius:3px">'
+       + '<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600"><span>' + u.n + '</span>'
+       + '<span style="cursor:pointer;color:var(--red2)" onclick="fdRemoveUnit(' + gi + ')">✕</span></div>';
+    _fdWeapons(u).forEach(function(w, i){
+      var n = g.counts[i] || 0;
+      h += '<div style="display:flex;align-items:center;gap:6px;padding:2px 0">'
+         + '<div style="flex:1;font-size:11px">' + w.name + ' <span style="font-size:9px;color:var(--txt2)">' + w.range + '" A' + w.A + ' ' + ((parseInt(w.skill) > 0) ? 'BS' + w.skill + '+ ' : '') + 'S' + w.S + ' AP' + w.AP + ' D' + w.D + '</span></div>'
+         + '<button class="cbtn" onclick="fdChg(' + gi + ',' + i + ',-1)">−</button><span style="min-width:16px;text-align:center;font-family:monospace">' + n + '</span>'
+         + '<button class="cbtn" onclick="fdChg(' + gi + ',' + i + ',1)"' + (used >= X ? ' disabled style="opacity:.4"' : '') + '>+</button></div>';
+    });
+    h += '</div>';
+  });
+  h += '<select onchange="fdAddUnit(this.value)" style="font-size:11px;width:100%;margin-top:2px"><option value="">+ Add embarked unit…</option>'
+     + units.map(function(u){ return '<option value="' + u.id + '">' + u.n + '</option>'; }).join('') + '</select>';
+  el.innerHTML = h + '</div>';
 }
 
 // ===== PMF STATE ENGINE =====
@@ -3156,11 +3220,15 @@ function renderResultsPies(containerId, d) {
         ov = s[ovSl] || 0;  // add overflow damage
       }
       var dmg = initW - remW + ov;
-      var dKey = Math.round(dmg*4)/4;
-      byDmg[dKey] = (byDmg[dKey]||0) + p;
+      var bgDeadK = Math.max(0, (initState[0]||0) - (s[0]||0)), ldrDeadK = 0;
+      for (var lk=2; lk<ovSl; lk++) if ((s[lk]||0) === 0 && initState[lk] > 0) ldrDeadK++;
+      var kk = poolIsTarget === 'bg' ? bgDeadK : poolIsTarget === 'ldr' ? ldrDeadK : bgDeadK + ldrDeadK;
+      var dKey = (Math.round(dmg*4)/4) + '|' + kk;
+      if (!byDmg[dKey]) byDmg[dKey] = {dmg: Math.round(dmg*4)/4, prob: 0, trueKills: kk};
+      byDmg[dKey].prob += p;
     }
     var arr = [];
-    for (var dk in byDmg) arr.push({dmg:parseFloat(dk),prob:byDmg[dk],kills:0,isKill:false});
+    for (var dk in byDmg) arr.push({dmg:byDmg[dk].dmg,prob:byDmg[dk].prob,trueKills:byDmg[dk].trueKills,kills:0,isKill:false});
     arr.sort(function(a,b){return a.dmg-b.dmg;});
     return arr;
   }
@@ -3803,9 +3871,7 @@ function labMakePieSVG(slices, total, wasteVal) {
     var wasteLabel=(wasteVal>0.01)?('<text x="'+cx+'" y="'+(cy+21)+'" text-anchor="middle" fill="#e74c3c" font-size="8" font-family=monospace>-'+(wasteVal*(tot/Math.max(total,0.01))).toFixed(1)+'w</text>'):'';
     return '<div style="text-align:center;flex:1"><div style="font-size:9px;color:'+col+';letter-spacing:1px;margin-bottom:2px">'+lbl+' '+tot.toFixed(2)+'</div><svg viewBox="0 0 '+sz+' '+sz+'" width="100%" style="max-width:'+sz+'px"><rect width="'+sz+'" height="'+sz+'" fill="transparent"/>'+svg+'<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" fill="'+col+'" font-size="12" font-family=monospace font-weight="bold">'+tot.toFixed(2)+'</text><text x="'+cx+'" y="'+(cy+9)+'" text-anchor="middle" fill="#8888aa" font-size="9" font-family=monospace>kills</text>'+wasteLabel+'</svg></div>';
   }
-  var lowS=slices.map(function(s){return Object.assign({},s,{val:s.val*0.75});});
-  var highS=slices.map(function(s){return Object.assign({},s,{val:s.val*1.25});});
-  return '<div style="display:flex;gap:4px">'+onePie(lowS,total*0.75,'#888','▼ LOW')+onePie(slices,total,'#4a9eff','◆ AVG')+onePie(highS,total*1.25,'#2ecc71','▲ HIGH')+'</div>';
+  return '<div style="display:flex;gap:4px;justify-content:center">'+onePie(slices,total,'#4a9eff','◆ AVG')+'</div>';
 }
 
 
@@ -3816,10 +3882,12 @@ function renderDmgOutcomesPie(outcomes, fnpR, defW, defModels, containerId, disp
 
   const net = outcomes.map(o => {
     const grossDmg = o.dmg;
-    const netDmg = fnpR > 0 ? Math.round(o.dmg * (1-fnpR) * 10)/10 : o.dmg;
+    const netDmg = (o.trueKills == null && fnpR > 0) ? Math.round(o.dmg * (1-fnpR) * 10)/10 : o.dmg;
     // Use DP kills from per-weapon unsaved+effD (accounts for boundary waste)
     let kills = 0;
-    if (o.weapons && o.weapons.length) {
+    if (o.trueKills != null) {
+      kills = o.trueKills;
+    } else if (o.weapons && o.weapons.length) {
       // Use DP model for all defW values — consistent with pipeline
       o.weapons.forEach(function(wp) {
         if (wp.unsaved > 0) kills += computeKillsAndWaste(wp.unsaved, wp.effD, fnpR, Math.max(1,defW), null).kills;
@@ -3892,7 +3960,7 @@ function renderDmgOutcomesPie(outcomes, fnpR, defW, defModels, containerId, disp
     const pct = net.filter(o => { const f=o.kills/defModels; return def.lo===1.0 ? o.isKill : f>=def.lo && f<def.hi; }).reduce((s,o)=>s+o.prob, 0);
     if (pct < 0.005) return '';
     const killLo = def.lo===0 ? 0 : Math.ceil(defModels*def.lo);
-    const killHi = def.hi===Infinity ? defModels : Math.floor(defModels*def.hi);
+    const killHi = def.hi===Infinity ? defModels : Math.ceil(defModels*def.hi)-1;
     const _dm=(displayModels!=null?displayModels:defModels); const sub = def.lo===1.0 ? 'kills all '+_dm+' models' : (def.lo===0 ? (Math.ceil(_dm*0.25)<=1 ? '<25% of wounds' : '<'+Math.ceil(_dm*0.25)+' models') : (killLo>killHi ? Math.round(def.lo*100)+'–'+(Math.round(def.hi*100)-1)+'% of wounds' : killLo+'–'+killHi+' of '+_dm+' models'));
     return `<div style="margin-bottom:3px;padding:4px 8px;border-radius:4px;background:${def.bg};border:1px solid ${def.border};display:flex;justify-content:space-between;align-items:center">
       <div>
@@ -4010,13 +4078,21 @@ function labSetScenario(phase, val) {
       var fnpR = parseFloat(el.getAttribute('data-fnpr')||'0');
       var defW = parseInt(el.getAttribute('data-defw')||'1');
       var defModels = parseInt((document.getElementById('lab-def-models')||{}).value)||10;
-      var sc = applyScenarioToPairs(pairs, fnpR);
-      var outcomes = combinedDiscreteOutcomes(sc.pairs);
-      renderDmgOutcomesPie(outcomes, sc.fnpR, defW, defModels, el.id);
+      var outcomes = _labOutcomesForEl(el);
+      if (outcomes) renderDmgOutcomesPie(outcomes, 0, defW, defModels, el.id);
     } catch(e) { console.warn('Scenario render error:', e); }
   });
 }
 
+function _labOutcomesForEl(el) {
+  var m = String(el.id).match(/(\d+)$/);
+  var T = m ? +m[1] : 4;
+  var pm = window._labResolveTc ? window._labResolveTc(T) : null;
+  if (!pm || !pm.outcomes) return null;
+  var g = {};
+  pm.outcomes.forEach(function(o){ var k = o.kills + '|' + Math.round(o.dmg); if (!g[k]) g[k] = {dmg: Math.round(o.dmg), prob: 0, trueKills: o.kills}; g[k].prob += o.prob; });
+  return Object.keys(g).map(function(k){ return g[k]; });
+}
 function applyScenarioToPairs(pairs, fnpR) {
   var s = window._labScenario || {hits:1,wnds:1,saves:1,fnp:1};
   // hits × wounds × (1/saves) applied to unsaved wound count
@@ -4032,7 +4108,8 @@ function applyScenarioToPairs(pairs, fnpR) {
   };
 }
 
-function labScenarioBtnHtml(hasFNP) {
+function labScenarioBtnHtml(hasFNP) { return ''; }
+function _labScenarioBtnHtmlOld(hasFNP) {
   var s = window._labScenario || {hits:1,wnds:1,saves:1,fnp:1};
   function mkRow(phase, label) {
     var btns = [[0.75,'▼','low'],[1.0,'◆','avg'],[1.25,'▲','high']].map(function(b) {
@@ -4158,10 +4235,9 @@ function labSetPieT(t) {
         } catch(e) {}
       }
       if (!pd) return;
-      var sc = applyScenarioToPairs(pd.pairs, pd.fnpR);
-      var outcomes = combinedDiscreteOutcomes(sc.pairs);
+      var outcomes = _labOutcomesForEl(pieEl);
       var defModels = parseInt((document.getElementById('lab-def-models')||{}).value)||10;
-      renderDmgOutcomesPie(outcomes, sc.fnpR, pd.defW, defModels, pieEl.id);
+      if (outcomes) renderDmgOutcomesPie(outcomes, 0, pd.defW, defModels, pieEl.id);
       var scEl = document.getElementById(pieEl.id+'-scenario');
       if (scEl) scEl.innerHTML = labScenarioBtnHtml(pd.fnpR > 0);
     }, 0);
@@ -4442,8 +4518,15 @@ function labCalc() {
   // === RENDER HIT RESULTS ===
   const showVar = true; // always show
   const hitAvg = totalHits;
-  const hitLow = hitAvg*0.75;
-  const hitHigh = hitAvg*1.25;
+  // Real spread: 10th / 90th percentile of the dice outcomes (all selected weapons combined)
+  const _hd = (() => {
+    const ds = [profileHitDists(atkProfile(w, _labAm, labDm(4), {half: half, count: cnt}))];
+    activeCmp.forEach(e => ds.push(profileHitDists(atkProfile(e.weapon, buildLabAm(e.weapon, half), labDm(4), {half: half, count: e.count}))));
+    const comb = k => ds.slice(1).reduce((a, d) => _distConvObj(a, d[k]), ds[0][k]);
+    return { all: comb('all'), crit: comb('crit'), norm: comb('norm') };
+  })();
+  const hitLow = _distPct(_hd.all, 0.1);
+  const hitHigh = _distPct(_hd.all, 0.9);
 
   // Per-buff impact on hits
   const impacts_hit = [];
@@ -4464,8 +4547,8 @@ function labCalc() {
   let hitHtml = '';
   if (kws.torrent) hitHtml += `<div class="lab-result-block" style="margin-bottom:4px;padding:6px 10px;background:rgba(230,126,34,0.12);border:1px solid var(--org)"><span style="font-size:11px;color:var(--org);font-weight:600">🌊 TORRENT — all ${totalAtk.toFixed(0)} attacks auto-hit, no BS roll</span></div>`;
   const displayHits = hasCombined ? combinedHits : hitAvg;
-  const displayHitsLow = displayHits * 0.75;
-  const displayHitsHigh = displayHits * 1.25;
+  const displayHitsLow = hitLow;
+  const displayHitsHigh = hitHigh;
   const displayLabel = hasCombined
     ? `${(activeCmp.length+1)} weapons · ${combinedHits.toFixed(2)} total`
     : `${totalAtk.toFixed(1)} attacks at ${kws.torrent?'auto-hit':(Math.max(2,Math.min(6,skill-_labP.bsMod-_labP.hitMod))+'+'+((_labP.bsMod||_labP.hitMod)?' (base '+skill+'+)':''))} (${((hFinal.critC+hFinal.normC)*100).toFixed(0)}% hit rate)`;
@@ -4477,20 +4560,20 @@ function labCalc() {
     <div class="lab-big-num" style="color:var(--grn2)">${displayHits.toFixed(2)}</div>
     <div class="lab-sub">${displayLabel}</div>
     <div class="lab-variation">
-      <div class="lab-var-box low"><div class="lab-var-label">▼ LOW (−25%)</div><div class="lab-var-val">${displayHitsLow.toFixed(2)}</div></div>
+      <div class="lab-var-box low"><div class="lab-var-label">▼ UNLUCKY (10%)</div><div class="lab-var-val">${displayHitsLow.toFixed(2)}</div></div>
       <div class="lab-var-box" style="border-color:var(--acc);color:var(--acc)"><div class="lab-var-label">◆ AVERAGE</div><div class="lab-var-val">${displayHits.toFixed(2)}</div></div>
-      <div class="lab-var-box high"><div class="lab-var-label">▲ HIGH (+25%)</div><div class="lab-var-val">${displayHitsHigh.toFixed(2)}</div></div>
+      <div class="lab-var-box high"><div class="lab-var-label">▲ LUCKY (90%)</div><div class="lab-var-val">${displayHitsHigh.toFixed(2)}</div></div>
     </div>
     <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px">
       <div style="background:#0a0a15;border:1px solid var(--bdr);border-radius:3px;padding:5px 8px">
         <div style="font-size:9px;color:var(--gold);letter-spacing:1px;margin-bottom:3px">CRIT HITS</div>
         <div style="font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--gold2)">${(hasCombined?combinedCrits:critHits).toFixed(2)}</div>
-        <div style="font-size:9px;color:var(--txt2);margin-top:2px">▼ ${((hasCombined?combinedCrits:critHits)*0.75).toFixed(2)} / ▲ ${((hasCombined?combinedCrits:critHits)*1.25).toFixed(2)}</div>
+        <div style="font-size:9px;color:var(--txt2);margin-top:2px">▼ ${_distPct(_hd.crit,0.1)} / ▲ ${_distPct(_hd.crit,0.9)}</div>
       </div>
       <div style="background:#0a0a15;border:1px solid var(--bdr);border-radius:3px;padding:5px 8px">
         <div style="font-size:9px;color:var(--grn2);letter-spacing:1px;margin-bottom:3px">NORMAL HITS</div>
         <div style="font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--grn2)">${(hasCombined?combinedNorms:normHits).toFixed(2)}</div>
-        <div style="font-size:9px;color:var(--txt2);margin-top:2px">▼ ${((hasCombined?combinedNorms:normHits)*0.75).toFixed(2)} / ▲ ${((hasCombined?combinedNorms:normHits)*1.25).toFixed(2)}</div>
+        <div style="font-size:9px;color:var(--txt2);margin-top:2px">▼ ${_distPct(_hd.norm,0.1)} / ▲ ${_distPct(_hd.norm,0.9)}</div>
       </div>
     </div>
   </div>`;
@@ -4922,8 +5005,17 @@ function labCalc() {
   // === BAR CHART: Damage + Kills + Wasted vs T2-T12 ===
   const chartData = [];
   for (let T=2; T<=12; T++) {
-    const r = fullCalcTCombined(T); // combined primary + compare weapons
-    chartData.push({T, ...r, dmgLow:r.dmgPerFail*0.75, dmgHigh:r.dmgPerFail*1.25, killsLow:r.kills*0.75, killsHigh:r.kills*1.25});
+    const r = Object.assign({}, fullCalcTCombined(T)); // combined primary + compare weapons
+    const pm = window._labResolveTc ? window._labResolveTc(T) : null;
+    let dmgLow = r.dmgPerFail, dmgHigh = r.dmgPerFail, killsLow = r.kills, killsHigh = r.kills;
+    if (pm && pm.outcomes) {
+      const kd = {}, dd = {};
+      pm.outcomes.forEach(o => { kd[o.kills] = (kd[o.kills]||0) + o.prob; const dk = Math.round(o.dmg); dd[dk] = (dd[dk]||0) + o.prob; });
+      r.kills = pm.summary.avgKills; r.dmgPerFail = pm.summary.avgAbsorbed;
+      killsLow = _distPct(kd, 0.1); killsHigh = _distPct(kd, 0.9);
+      dmgLow = _distPct(dd, 0.1); dmgHigh = _distPct(dd, 0.9);
+    }
+    chartData.push({T, ...r, dmgLow, dmgHigh, killsLow, killsHigh});
   }
   const maxDmg   = Math.max(...chartData.map(d=>d.dmgHigh), 0.01);
   const maxKills = Math.max(...chartData.map(d=>d.killsHigh), 0.01);
@@ -5015,6 +5107,9 @@ function labCalc() {
   const tBtns = tOptions.map(t=>`<button onclick="labSetPieT(${t})" id="lab-pie-t-${t}" style="padding:2px 7px;font-size:10px;border:1px solid var(--bdr);background:${t===initT?'var(--blue)':'var(--p2)'};color:var(--txt);cursor:pointer;border-radius:3px;font-family:monospace">T${t}</button>`).join('');
 
   // Function to compute buff contribution slices for a given T (stored as data, rendered by JS)
+  const _labPmfCache = {};
+  function labResolveTc(T) { if (!(T in _labPmfCache)) _labPmfCache[T] = labResolveT(T); return _labPmfCache[T]; }
+  window._labResolveTc = labResolveTc;
   function labResolveT(T) {
     var invVal = parseInt(document.getElementById('lab-def-inv').value)||null;
     var dm = labDm(T);
@@ -5042,7 +5137,7 @@ function labCalc() {
     function buildPieData(T) {
     // Use combined total when compare weapons are active
     const r0 = hasCombined ? fullCalcTCombined(T) : fullCalcT(T);
-    var pmfT = labResolveT(T);
+    var pmfT = labResolveTc(T);
     const totalKills = (pmfT && pmfT.summary ? pmfT.summary.avgKills : r0.kills) || 0.001;
 
     // Kills with one buff toggled off (shared 11th-edition engine; compare weapons inherit shared buffs)
@@ -5056,9 +5151,10 @@ function labCalc() {
     let ci=0;
     const contributions=[];
 
+    const _evTotal = killsWithout({});
     function tryBuf(label, modOff) {
       const without = killsWithout(modOff);
-      const contrib = Math.max(0, totalKills - without);
+      const contrib = Math.max(0, _evTotal - without);
       if (contrib > 0.001) contributions.push({label, contrib, col:cols[ci++%cols.length]});
     }
 
@@ -5168,12 +5264,12 @@ function labCalc() {
     function calcW2(w2, cnt2) {
       return Ts.map(T => { const c = labCalcWith(w2, cnt2, T, {}); return {T, hits:c.hits, wnds:c.wnds, dmg:c.dmg, kills:c.kills}; });
     }
-    const cmpData1 = Ts.map(T => { const r=fullCalcT(T); var pmfRa=labResolveT(T); return {T, hits:totalHits, wnds:r.totalWounds, dmg:r.dmgPerFail, kills:(pmfRa&&pmfRa.summary?pmfRa.summary.avgKills:r.kills)}; });
+    const cmpData1 = Ts.map(T => { const r=fullCalcT(T); var pmfRa=labResolveTc(T); return {T, hits:totalHits, wnds:r.totalWounds, dmg:r.dmgPerFail, kills:(pmfRa&&pmfRa.summary?pmfRa.summary.avgKills:r.kills)}; });
     const allSeries = [{label:`${w.name} ×${cnt}`, col:'#2980b9', data:cmpData1}];
 
     // Build comparison data for all T2-T12
     const allTs = [2,3,4,5,6,7,8,9,10,11,12];
-    const fullCmpData1 = allTs.map(T => { const r=fullCalcT(T); var pmfRb=labResolveT(T); return {T, hits:totalHits, wnds:r.totalWounds, dmg:r.dmgPerFail, kills:(pmfRb&&pmfRb.summary?pmfRb.summary.avgKills:r.kills)}; });
+    const fullCmpData1 = allTs.map(T => { const r=fullCalcT(T); var pmfRb=labResolveTc(T); return {T, hits:totalHits, wnds:r.totalWounds, dmg:r.dmgPerFail, kills:(pmfRb&&pmfRb.summary?pmfRb.summary.avgKills:r.kills)}; });
     const fullAllSeries = [
       {label:`${w.name} ×${cnt}`, col:'#2980b9', data:fullCmpData1},
       ...activeCompare.map((e,i)=>({label:`${e.weapon.name} ×${e.count}`, col:cmpCols[i%cmpCols.length], data:calcW2Full(e.weapon,e.count)}))
@@ -5255,9 +5351,8 @@ function labCalc() {
         var fnpR = parseFloat(el.getAttribute('data-fnpr'));
         var defW = parseInt(el.getAttribute('data-defw'))||1;
         var defModels = parseInt((document.getElementById('lab-def-models')||{}).value)||10;
-        var sc = applyScenarioToPairs(pairs, fnpR);
-        var outcomes = combinedDiscreteOutcomes(sc.pairs);
-        renderDmgOutcomesPie(outcomes, sc.fnpR, defW, defModels, el.id);
+        var outcomes = _labOutcomesForEl(el);
+        if (outcomes) renderDmgOutcomesPie(outcomes, 0, defW, defModels, el.id);
       } catch(e) { console.error('pie render error', e); }
     });
     // Render scenario toggle UI
