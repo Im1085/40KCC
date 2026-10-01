@@ -27,10 +27,20 @@ def find(stem):
             return os.path.join(SRC, fn)
     raise SystemExit('missing ' + stem)
 def R(stem):
-    return list(csv.DictReader(open(find(stem), encoding='utf-8-sig'), delimiter='|'))
+    # Robust '|' reader: some description fields contain raw newlines, so join lines until
+    # a record has the full number of separators.
+    txt = open(find(stem), encoding='utf-8-sig').read().replace('\r\n', '\n')
+    lines = txt.split('\n'); hdr = lines[0].split('|'); n = len(hdr) - 1
+    rows, buf = [], ''
+    for ln in lines[1:]:
+        buf = ln if not buf else buf + '\n' + ln
+        if buf.count('|') >= n:
+            rows.append(dict(zip(hdr, buf.split('|')))); buf = ''
+    return rows
 
 def clean(s):
-    s = re.sub(r'<[^>]+>', ' ', s or '')
+    s = re.sub(r'</li>', '. ', s or '', flags=re.I)
+    s = re.sub(r'<[^>]+>', ' ', s)
     return re.sub(r'\s+', ' ', html.unescape(s)).strip()
 
 def num(s, d=0):
@@ -140,7 +150,7 @@ def main():
         elif mm:
             dmgW = -int(mm.group(1))   # damaged profile that does not affect hit rolls
         # abilities: [name, text, effects]
-        abl = []
+        abl = []; fdeck = 0
         wnames = sorted({re.sub(r'\s+[–-]\s+.*$', '', w[0]).lower() for w in ws}, key=len, reverse=True)
         for a in uab[d['id']]:
             typ = a['type']
@@ -148,6 +158,8 @@ def main():
                 cn = core.get(a['ability_id'], ''); par = (a['parameter'] or '').strip()
                 if cn == 'Feel No Pain' and re.match(r'\d', par):
                     abl.append(['Feel No Pain ' + par, 'Core ability.', [['d', 'fnp', int(par[0]), 'all', 'unit', 0]]])
+                elif cn == 'Firing Deck' and re.match(r'\d', par):
+                    fdeck = int(re.match(r'\d+', par).group())
                 elif cn == 'Stealth':
                     abl.append(['Stealth', 'Core ability: ranged attacks against this unit are made as if it had the benefit of cover.', [['d', 'stealth', 1, 'all', 'unit', 0]]])
                 continue
@@ -162,11 +174,37 @@ def main():
             abl.append([nm, txt[:700], effs])
         units[d['faction_id']].append([
             did, clean(d['name']), d['role'], m['M'], num(m['T'], 4), m['Sv'], inv, num(m['W'], 1),
-            m['Ld'], num(m['OC'], 0), ws, flags, '|'.join(ukw[d['id']]), dmgW, abl])
+            m['Ld'], num(m['OC'], 0), ws, flags, '|'.join(ukw[d['id']]), dmgW, abl, fdeck])
 
     f_out = [[f['id'], f['name']] for f in fac if units.get(f['id'])]
+    # ---- army rules, detachments (abilities + enhancements) ----
+    def abil_entry(name, desc, force_cond=False):
+        nm = clean(name); txt = clean(desc)
+        effs = parse_ability(txt, nm)
+        for e in effs:
+            if e[4] == 'model': e[4] = 'unit'
+            if force_cond: e[5] = 1
+        return [nm, txt[:900], effs]
+    ar = collections.defaultdict(list); seen_ar = set()
+    for a in R('Abilities'):
+        fid = a['faction_id']
+        if not fid or (fid, a['name']) in seen_ar: continue
+        seen_ar.add((fid, a['name']))
+        ar[fid].append(abil_entry(a['name'], a['description']))
+    dets = collections.defaultdict(list); dmap = {}
+    for d0 in R('Detachments'):
+        if d0['type'] == 'Boarding Actions' or not d0['faction_id']: continue
+        e = [d0['id'], clean(d0['name']), [], []]
+        dmap[d0['id']] = e; dets[d0['faction_id']].append(e)
+    for a in R('Detachment_abilities'):
+        if a['detachment_id'] in dmap: dmap[a['detachment_id']][2].append(abil_entry(a['name'], a['description']))
+    for a in R('Enhancements'):
+        if a['detachment_id'] in dmap:
+            en = abil_entry(a['name'], a['description'], force_cond=True); en.append(a['cost'])
+            dmap[a['detachment_id']][3].append(en)
+    for k in dets: dets[k].sort(key=lambda x: x[1])
     lm = {k: v for k, v in leaders.items()}
-    out = {'f': f_out, 'u': dict(units), 'lm': lm, 'meta': {'edition': 11, 'updated': upd}}
+    out = {'f': f_out, 'u': dict(units), 'lm': lm, 'ar': dict(ar), 'det': dict(dets), 'meta': {'edition': 11, 'updated': upd}}
     raw = json.dumps(out, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
     open('db_new.json', 'wb').write(raw)
     b64 = base64.b64encode(gzip.compress(raw, 9, mtime=0)).decode()

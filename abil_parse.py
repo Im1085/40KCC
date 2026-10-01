@@ -88,12 +88,12 @@ def parse(text, name=''):
             add('d', 'mWnd', 1, c=1 if ('strength' in s or cond) else 0)
         # ----- offensive (skip debuffs aimed at enemies) -----
         if not enemy or 'targets' in s:
-            if re.search(r'add 1 to the hit roll|\+1 to hit', s) and not targeted_def(s): add('a', 'hit', 1)
-            if re.search(r'add 1 to the wound roll|\+1 to wound', s) and not targeted_def(s): add('a', 'wnd', 1)
-            if 're-roll a hit roll of 1' in s: add('a', 'rrH1')
-            if re.search(r're-roll the hit roll', s): add('a', 'rrH')
-            if 're-roll a wound roll of 1' in s: add('a', 'rrW1')
-            if re.search(r're-roll the wound roll', s): add('a', 'rrW')
+            if re.search(r'add 1 to (the )?hit rolls?|\+1 to hit', s) and not targeted_def(s): add('a', 'hit', 1)
+            if re.search(r'add 1 to (the )?wound rolls?|\+1 to wound', s) and not targeted_def(s): add('a', 'wnd', 1)
+            if re.search(r're-roll (a |the )?hit rolls? of 1', s): add('a', 'rrH1')
+            if re.search(r're-roll (the |a )?hit rolls?(?! of 1)', s) and not re.search(r're-roll (a |the )?hit rolls? of 1', s): add('a', 'rrH')
+            if re.search(r're-roll (a |the )?wound rolls? of 1', s): add('a', 'rrW1')
+            if re.search(r're-roll (the |a )?wound rolls?(?! of 1)', s) and not re.search(r're-roll (a |the )?wound rolls? of 1', s): add('a', 'rrW')
             if '[lethal hits]' in s: add('a', 'lethal')
             m = re.search(r'\[sustained hits (\d)\]', s)
             if m: add('a', 'sus', int(m.group(1)))
